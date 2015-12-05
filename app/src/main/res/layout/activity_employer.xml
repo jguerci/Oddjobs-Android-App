@@ -7,7 +7,7 @@
     android:background="#e3e3e3"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".EmployeeActivity">
+    tools:context=".EmployerActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,13 +15,13 @@
         android:layout_gravity="center_horizontal">
 
         <Button
-            android:id="@+id/employee.bHire"
-            android:text="Hire Someone"
+            android:id="@+id/employer.bEarn"
+            android:text="Earn Money"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:layout_width="170dp"
             android:layout_height="128dp"
-            android:background="@drawable/buttonhire"
+            android:background="@drawable/buttonearn"
             android:shadowColor="#A8A8A8"
             android:shadowDx="0"
             android:shadowDy="0"
@@ -43,7 +43,7 @@
                 android:layout_height="128dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/user_profile"
-                android:id="@+id/employee.ibUserProfile" />
+                android:id="@+id/employer.ibUserProfile" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
                 android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Username"
-                android:id="@+id/employee.tvUsername" />
+                android:id="@+id/employer.tvUsername" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -60,30 +60,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Upcoming Jobs"
+        android:text="Contracted Jobs"
         android:textStyle="bold"
-        android:id="@+id/employee.tvUpcomingJobs"
+        android:id="@+id/employer.tvContractedJobs"
         android:layout_gravity="center_horizontal" />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="258dp"
-        android:id="@+id/employee.lvUpcomingJobs"
+        android:layout_height="120dp"
+        android:id="@+id/employer.lvContractedJobs"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Uncontracted Jobs"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:id="@+id/employer.tvUncontractedJobs" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:id="@+id/employer.lvUncontractedJobs"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Repost a previous job"
+        android:id="@+id/employer.bRepostJob"
         android:layout_marginTop="20dp"
-        android:text="search for a job by location"
-        android:id="@+id/employee.bSearchByLocation"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search for a job by time"
-        android:id="@+id/employee.bSearchByTime"
+        android:text="post a new job"
+        android:id="@+id/employer.bPostNewJob"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

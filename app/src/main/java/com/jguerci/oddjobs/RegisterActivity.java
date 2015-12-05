@@ -17,24 +17,24 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class Register extends AppCompatActivity {
+import javax.net.ssl.HttpsURLConnection;
+
+public class RegisterActivity extends AppCompatActivity {
 
     // Activity Request Code
     private static final int SELECT_IMAGE = 101;
@@ -47,13 +47,9 @@ public class Register extends AppCompatActivity {
     Button bCreateProfile, bAddCard;
     ImageButton ibUserProfile;
 
-    // Server Request URI
-    private static final String URI = "http://cstrat67.comli.com/Register.php";
-
     // Server Request
-    private StringRequest request;
-    ProgressDialog registerDialog;
-    ProgressDialog imageDialog;
+    ProgressDialog imageDialog, registerDialog;
+    private static final String REGISTER_URI = "http://oddjobs.netne.net/Register.php";
 
     // User Profile Image
     private Uri fileURI = null;
@@ -61,7 +57,7 @@ public class Register extends AppCompatActivity {
     private Bitmap bitmap;
 
     // User Credentials Storage
-    SharedPreferences settings;
+    SharedPreferences sharedPrefs;
     public static final String USER_PREFS = "UserPreferences";
 
     @Override
@@ -85,59 +81,27 @@ public class Register extends AppCompatActivity {
         bAddCard.setOnClickListener(registerListener);
         bCreateProfile.setOnClickListener(registerListener);
         ibUserProfile.setOnClickListener(registerListener);
+
+        sharedPrefs = getSharedPreferences(USER_PREFS, MODE_PRIVATE);
+        sharedPrefs.edit().clear().commit();
     }
 
     protected View.OnClickListener registerListener = new View.OnClickListener() {
         public void onClick(final View v) {
             switch(v.getId()){
                 case R.id.register_bCreateProfile: {
-                    request = new StringRequest(Request.Method.POST, URI, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                String output = (String) jsonObject.get("output");
-                                if (output.equals("success")) {
-                                    Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(getApplicationContext(), EmployeeActivity.class));
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Error: " + output, Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            registerDialog.dismiss();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            HashMap<String, String> hashMap = new HashMap<String, String>();
-                            hashMap.put("lastname",  etLastName.getText().toString());
-                            hashMap.put("firstname", etFirstName.getText().toString());
-                            hashMap.put("username",  etUsername.getText().toString());
-                            hashMap.put("password",  etPassword.getText().toString());
-                            hashMap.put("address",   etAddress.getText().toString());
-                            hashMap.put("city",      etCity.getText().toString());
-                            hashMap.put("state",     etState.getText().toString());
-                            hashMap.put("zip",       etZIP.getText().toString());
-                            hashMap.put("image", base64Image);
+                    StringBuffer postParams = new StringBuffer("");
+                    postParams.append("lastname="   + etLastName.getText().toString());
+                    postParams.append("&firstname=" + etFirstName.getText().toString());
+                    postParams.append("&username="  + etUsername.getText().toString());
+                    postParams.append("&password="  + etPassword.getText().toString());
+                    postParams.append("&address="   + etAddress.getText().toString());
+                    postParams.append("&city="      + etCity.getText().toString());
+                    postParams.append("&state="     + etState.getText().toString());
+                    postParams.append("&zip="       + etZIP.getText().toString());
+                    postParams.append("&image="     + base64Image);
 
-                            return hashMap;
-                        }
-                    };
-                    // Extend default socket timeout to account for large file uploads
-                    RetryPolicy policy = new DefaultRetryPolicy(15000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-                    request.setRetryPolicy(policy);
-                    RequestHandler.getInstance(getApplicationContext()).addToRequestQueue(request);
-
-                    registerDialog = new ProgressDialog(Register.this);
-                    registerDialog.setCancelable(false);
-                    registerDialog.setMessage("Creating Profile...");
-                    registerDialog.show();
+                    new Register().execute(REGISTER_URI, postParams.toString());
                     break;
                 }
                 case R.id.register_bAddCard: {
@@ -157,7 +121,6 @@ public class Register extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK && data != null) {
             fileURI = data.getData();
-            //imageName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileURI);
                 int bitmapWidth = (int) getResources().getDimension(R.dimen.bitmapWidth);
@@ -173,11 +136,11 @@ public class Register extends AppCompatActivity {
         }
     }
 
-    /* Converts bitmap to base64 in worker thread to store as blob in MySQL database */
+    /* Converts bitmap to base64 for storage in SQL database */
     private class ImageEncoder extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            imageDialog = new ProgressDialog(Register.this);
+            imageDialog = new ProgressDialog(RegisterActivity.this);
             imageDialog.setCancelable(false);
             imageDialog.setMessage("Processing Image...");
             imageDialog.show();
@@ -197,6 +160,81 @@ public class Register extends AppCompatActivity {
             if (imageDialog.isShowing()) {
                 imageDialog.dismiss();
             }
+        }
+    }
+
+    protected class Register extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            registerDialog = new ProgressDialog(RegisterActivity.this);
+            registerDialog.setCancelable(false);
+            registerDialog.setMessage("Creating Profile...");
+            registerDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection con = null;
+            StringBuffer response = new StringBuffer("");
+
+            try {
+                URL url = new URL(params[0]);
+                con = (HttpURLConnection) url.openConnection();
+                con.setReadTimeout(15000);
+                con.setConnectTimeout(15000);
+                con.setRequestMethod("POST");
+                con.setDoInput(true);
+                con.setDoOutput(true);
+
+                OutputStream os = con.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(params[1]);
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int code = con.getResponseCode();
+                if (code == HttpsURLConnection.HTTP_OK) {
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response.append(line);
+                    }
+                }
+
+                return response.toString();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (con != null) {
+                    con.disconnect();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String output = (String) jsonObject.get("output");
+                if (output.equals("success")) {
+                    sharedPrefs.edit().putString("username", etUsername.getText().toString()).commit();
+                    Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), EmployeeActivity.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error: " + output, Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            registerDialog.dismiss();
         }
     }
 }

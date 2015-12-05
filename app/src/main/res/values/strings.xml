@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">OddJobs</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="Categories">Categories</string>
+
+    <string-array name="categories_array">
+        <item>[Select a Category...]</item>
+        <item>Babysitting</item>
+        <item>Gardening</item>
+        <item>Dog Walking</item>
+        <item>Lawn Mowing</item>
+        <item>Yardwork</item>
+        <item>Cleaning</item>
+        <item>Car Repair</item>
+        <item>Delivery</item>
+        <item>Construction</item>
+        <item>Packing</item>
+        <item>Disposal</item>
+        <item>Computer Repair</item>
+    </string-array>
 </resources>

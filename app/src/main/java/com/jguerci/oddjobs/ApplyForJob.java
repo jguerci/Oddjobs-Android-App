@@ -26,13 +26,17 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class ApplyForJob extends AppCompatActivity {
 
     // UI Widgets
-    TextView tvTitle, tvAddress, tvCityState, tvDateTime;
+    TextView tvTitle, tvAddress, tvDate, tvTime;
     TextView tvPayment, tvDuration, tvCategory, tvEmployer;
     ImageButton ibUserProfile;
     EditText etDescription;
@@ -55,8 +59,8 @@ public class ApplyForJob extends AppCompatActivity {
 
         tvTitle = (TextView) findViewById(R.id.apply_tvTitle);
         tvAddress = (TextView) findViewById(R.id.apply_tvAddress);
-        tvCityState = (TextView) findViewById(R.id.apply_tvCityState);
-        tvDateTime = (TextView) findViewById(R.id.apply_tvDateTime);
+        tvDate = (TextView) findViewById(R.id.apply_tvDate);
+        tvTime = (TextView) findViewById(R.id.apply_tvTime);
         tvPayment = (TextView) findViewById(R.id.apply_tvPayment);
         tvDuration = (TextView) findViewById(R.id.apply_tvDuration);
         tvCategory = (TextView) findViewById(R.id.apply_tvCategory);
@@ -169,8 +173,17 @@ public class ApplyForJob extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     tvTitle.setText(jsonObject.getString("title"));
                     tvAddress.setText(jsonObject.getString("address"));
-                    tvCityState.setText(jsonObject.getString("city") + ", " + jsonObject.getString("state"));
-                    tvDateTime.setText(jsonObject.getString("date") + " " + jsonObject.getString("time"));
+                    tvDate.setText(jsonObject.getString("date"));
+
+                    String time = jsonObject.getString("time");
+                    DateFormat inputformat = new SimpleDateFormat("HH:mm");
+                    DateFormat outputformat = new SimpleDateFormat("hh:mm aa");
+                    Date date = null;
+                    String output = null;
+                    date = inputformat.parse(time);
+                    output = outputformat.format(date);
+                    tvTime.setText(output);
+
                     tvPayment.setText(jsonObject.getString("payment"));
                     tvDuration.setText(jsonObject.getString("duration"));
                     tvCategory.setText(jsonObject.getString("tag"));
@@ -178,6 +191,8 @@ public class ApplyForJob extends AppCompatActivity {
                     etDescription.setText(jsonObject.getString("description"));
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
 

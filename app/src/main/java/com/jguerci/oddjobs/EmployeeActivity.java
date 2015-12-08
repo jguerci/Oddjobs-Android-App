@@ -105,7 +105,7 @@ public class EmployeeActivity extends AppCompatActivity {
                     break;
                 }
                 case R.id.employee_bSearchByTime: {
-                    Toast.makeText(getApplicationContext(), "TODO", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Not Implemented", Toast.LENGTH_SHORT).show();
                     break;
                 }
             }

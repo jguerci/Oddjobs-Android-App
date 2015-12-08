@@ -89,7 +89,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Address address = addressList.get(0);
             LatLng position = new LatLng(address.getLatitude() , address.getLongitude());
 
-            iconFactory.setColor(Color.CYAN);
+            if ((Integer.parseInt(id) % 6) == 0) {
+                iconFactory.setColor(Color.WHITE);
+            }
+            else if ((Integer.parseInt(id) % 5) == 0) {
+                iconFactory.setColor(Color.MAGENTA);
+            }
+            else if ((Integer.parseInt(id) % 4) == 0) {
+                iconFactory.setColor(Color.YELLOW);
+            }
+            else if ((Integer.parseInt(id) % 3) == 0) {
+                iconFactory.setColor(Color.GREEN);
+            }
+            else if ((Integer.parseInt(id) % 2) == 0) {
+                iconFactory.setColor(Color.RED);
+            }
+            else {
+                iconFactory.setColor(Color.CYAN);
+            }
 
             // Store job_id in snippet for SQL queries
             MarkerOptions markerOptions = new MarkerOptions()
@@ -103,11 +120,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected class FetchJobLocations extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(String... params) {
             HttpURLConnection con = null;

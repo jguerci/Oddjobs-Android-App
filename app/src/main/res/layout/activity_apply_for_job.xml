@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.jguerci.oddjobs.ApplyForJob">
 
     <LinearLayout
@@ -46,32 +47,36 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Title"
+                android:textStyle="bold"
                 android:layout_marginTop="10dp"
                 android:id="@+id/apply.tvTitle"
+                android:gravity="center"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Address"
+                android:layout_marginTop="10dp"
                 android:id="@+id/apply.tvAddress"
+                android:gravity="center"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="City, State"
-                android:id="@+id/apply.tvCityState"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Date"
+                android:id="@+id/apply.tvDate"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Date, Time"
-                android:id="@+id/apply.tvDateTime"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Time"
+                android:id="@+id/apply.tvTime"
                 android:layout_gravity="center_horizontal" />
         </LinearLayout>
     </LinearLayout>
@@ -115,17 +120,16 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="contact"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/apply.bContact"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="apply for job"
         android:id="@+id/apply.bApply"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

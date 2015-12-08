@@ -44,7 +44,7 @@
                 android:text="City, State"
                 android:layout_marginTop="5dp"
                 android:layout_gravity="center"
-                android:id="@+id/profile.tvLocation" />
+                android:id="@+id/profile.tvCityState" />
 
             <RatingBar
                 android:id="@+id/profile.rbRating"
@@ -111,7 +111,13 @@
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="258dp"
         android:id="@+id/profile.lvTransactions" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Logout"
+        android:id="@+id/profile.bLogout" />
 
 </LinearLayout>
